@@ -106,6 +106,10 @@ const GATES = {
 };
 for (const k of ['SeenHoursPreventLootRespawn', 'MaxItemsForLootRespawn', 'ConstructionPreventsLootRespawn'])
   GATES[k] = [v => v.HoursForLootRespawn > 0, 'loot respawn is off'];
+// The looted and diminished chances ramp as Max x days / DaysUntilMax, so a Max of 0 makes the rest do nothing.
+for (const k of ['DaysUntilMaximumLooted', 'RuralLooted'])
+  GATES[k] = [v => v.MaximumLooted > 0, 'Maximum Looted Building Chance is 0'];
+GATES.DaysUntilMaximumDiminishedLoot = [v => v.MaximumDiminishedLoot > 0, 'Maximum Diminished Loot Percentage is 0'];
 
 // State: vals by key path, overridden followers, unknown entries as raw text by table ('' = top level).
 let S = fresh();
