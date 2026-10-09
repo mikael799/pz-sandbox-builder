@@ -27,14 +27,13 @@ assert.throws(() => core.loadText('SandboxVars = { VERSION = 5 }'), /VERSION 5/)
 assert.throws(() => core.loadText('SandboxVars = {\n VERSION = 6,\n Zombies = "x",\n}'), /^Error: Line 3: Zombies/);
 assert.throws(() => core.loadText('SandboxVars = {\n VERSION = 6,\n Zombies = ,\n}'), /Line 3/);
 
-// 4. Zombies -> Very High sets 1.6 / 2.0 / 2.0, an overridden Peak survives the next change.
+// 4. Zombies sets only PopulationMultiplier, like the game. Start and Peak keep their values.
 core.loadText(def);
 const v = core.S.vals, z = k => v['ZombieConfig.' + k];
-core.setValue('Zombies', 2);
-assert.deepStrictEqual([z('PopulationMultiplier'), z('PopulationStartMultiplier'), z('PopulationPeakMultiplier')], [1.6, 2, 2]);
-core.setValue('ZombieConfig.PopulationPeakMultiplier', 3);
-assert.ok(core.S.over.has('ZombieConfig.PopulationPeakMultiplier'));
+core.setValue('Zombies', 1);
+assert.deepStrictEqual([z('PopulationMultiplier'), z('PopulationStartMultiplier'), z('PopulationPeakMultiplier')], [2.5, 1, 1.5]);
+core.setValue('ZombieConfig.PopulationMultiplier', 3);
+assert.ok(core.S.over.has('ZombieConfig.PopulationMultiplier'));
 core.setValue('Zombies', 3);
-assert.deepStrictEqual([z('PopulationMultiplier'), z('PopulationPeakMultiplier')], [1.2, 3]);
-assert.ok(core.write().includes('PopulationStartMultiplier = 1.5,'));
+assert.strictEqual(z('PopulationMultiplier'), 3);
 console.log('All checks passed.');

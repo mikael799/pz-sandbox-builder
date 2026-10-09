@@ -37,7 +37,7 @@ Source: [Linked groups and scaling rules](issues/03-linked-groups-and-scaling.md
 
 | Driver | Followers | Rule |
 |---|---|---|
-| `Zombies` | `ZombieConfig.PopulationMultiplier`, `PopulationStartMultiplier`, `PopulationPeakMultiplier` | Table per level, below |
+| `Zombies` | `ZombieConfig.PopulationMultiplier` | Insane 2.5, Very High 1.6, High 1.2, Normal 0.65, Low 0.15, None 0.0. The game does not change Start or Peak. |
 | `ZombieRespawn` | `ZombieConfig.RespawnHours`, `RespawnUnseenHours`, `RespawnMultiplier` | High 16/6/0.5, Normal 72/16/0.1, Low 216/48/0.05, None 0/0/0 |
 | `ZombieMigrate` | `ZombieConfig.RedistributeHours` | on 12.0, off 0.0 |
 | `WaterShut` | `WaterShutModifier` | Random day in range, with a re-roll button |
