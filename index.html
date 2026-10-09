@@ -39,6 +39,7 @@ h2{font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--mute
 .lbl{font-weight:500}
 .lbl small{display:block;color:var(--mute);font-size:12.5px;font-weight:400;line-height:1.45;margin-top:2px}
 .lbl small.calc{color:var(--accent);font-weight:600}
+.lbl small.danger{color:var(--bad);font-weight:600}
 .ctl{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
 .row.changed{background:var(--chg)}
 .row.follower{padding-left:38px;background:linear-gradient(90deg,transparent 22px,var(--accent) 22px,var(--accent) 24px,transparent 24px)}
@@ -560,13 +561,15 @@ const DESC = {
 // The game's comment for a setting, without color codes. The input already enforces Min and Max.
 const lines = o => (o.tooltip ?? '').split('\\n').map(s => s.replace(/<[^>]*>/g, '').replace(/^Min: \S+ Max: \S+ (Default: .*)$/, '$1').trim()).filter(Boolean);
 const hint = o => DESC[o.key] ?? lines(o).join(' ');
+// Settings that can slow the game down. The game marks the first two with [!] in their labels.
+const DANGER = new Set(['RollsMultiplier', 'PlaceDirtAboveground', 'ZombieConfig.ZombiesCountBeforeDelete']);
 // Community "16x zombies" means Population Multiplier 4.0 x Peak 4.0, the highest both fields allow.
 // It shows under every population field, because Population Multiplier sits under Zombie Count and the rest sit further down.
 const popNote = () => { const v = k => S.vals['ZombieConfig.Population' + k], p = v('Multiplier'), x = n => +(p * n).toFixed(2);
   return `Day 1: ${p} × ${v('StartMultiplier')} = ${x(v('StartMultiplier'))}x zombies. Day ${v('PeakDay')} (peak): ${p} × ${v('PeakMultiplier')} = ${x(v('PeakMultiplier'))}x. The game default is 0.65x on day 1 and 0.98x on day 28.`; };
 const EXTRA = Object.fromEntries(['Multiplier', 'StartMultiplier', 'PeakMultiplier', 'PeakDay'].map(k => ['ZombieConfig.Population' + k, popNote]));
 const row = (o, cls = '') => `<div class="row ${cls} ${changed(o.key) ? 'changed' : ''} ${gateOff(o.key) ? 'inactive' : ''} ${bad(o.key) ? 'bad' : ''}">
-  <div class="lbl" title="${esc(o.key)}">${esc(o.label)}${tags(o.key)}${hint(o) ? `<small>${esc(hint(o))}</small>` : ''}${EXTRA[o.key] ? `<small class="calc">${esc(EXTRA[o.key]())}</small>` : ''}</div><div class="ctl">${control(o)}</div></div>`;
+  <div class="lbl" title="${esc(o.key)}">${esc(o.label)}${tags(o.key)}${hint(o) ? `<small${DANGER.has(o.key) ? ' class="danger"' : ''}>${esc(hint(o))}</small>` : ''}${EXTRA[o.key] ? `<small class="calc">${esc(EXTRA[o.key]())}</small>` : ''}</div><div class="ctl">${control(o)}</div></div>`;
 // Rows in list order, with each driver's followers pulled up right under it.
 function rows(list) {
   const here = new Set(list.map(o => o.key));
